@@ -1,0 +1,107 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+}
+
+type Event {
+    _id: Int!
+    coordinate_x: Float
+    coordinate_y: Float
+    event_type: String
+    game_states: [String]
+    match: Match
+    minute: Float
+    opponent_team: TeamEventInfo
+    pass: Pass
+    period: Int
+    player: PlayerEventInfo
+    position_in_match: String
+    second: Int
+    team: TeamEventInfo
+    timestamp: Float
+    video_end_timestamp: Float
+    video_start_timestamp: Int
+    x_location_group: String
+    y_location_group: String
+}
+
+type Match {
+    _id: Int!
+    away_team: Team
+    away_team_Score: Int
+    competition_id: Int
+    competition_name: String
+    date: String
+    first_half_video_start: Int
+    home_team: Team
+    home_team_score: Int
+    match_day: Int
+    season_id: Int
+    second_half_video_Start: Int
+    wyscout_match_id: Int
+}
+
+type OpponentTeamEventInfo {
+    _id: Int!
+    defence: String
+    name: String
+}
+
+type Pass {
+    direction_group: String
+    end_coordinate_x: Float
+    end_coordinate_y: Float
+    length_group: String
+    receiving_player: TeamEventInfo
+    result: String
+    set_piece_type: String
+}
+
+type Player {
+    _id: Int!
+    birth_date: String
+    country: String
+    display_name: String
+    first_name: String
+    height: Int
+    jersey_num: Int
+    join_date: String
+    last_name: String
+    name: String
+    position_line: String
+    preferred_foot: String
+    team: Team
+    weight: Int
+}
+
+type PlayerEventInfo {
+    _id: Int!
+    display_name: String
+    name: String
+    position: String
+}
+
+type Query {
+    crossesByTeamAndFormation(formation: String, teamId: Int!): [Event]
+    eventsByTeamAndFormation(formation: String, teamId: Int!): [Event]
+    player(id: Int!): Player
+    playersByTeam(teamId: Int!): [Player]
+    team(id: Int!): Team
+    teams: [Team]
+}
+
+type Team {
+    _id: Int!
+    competition_id: Int
+    image: String
+    league: String
+    name: String
+    wyscout_name: String
+}
+
+type TeamEventInfo {
+    _id: Int!
+    formation: String
+    name: String
+}

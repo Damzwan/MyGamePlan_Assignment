@@ -1,0 +1,28 @@
+query teams{
+    teams {
+        name,
+        _id
+    }
+}
+
+query team($teamId: Int!){
+    team(id: $teamId){
+        name
+        image
+    }
+}
+
+query crossEvents($teamId: Int!, $formation: String!){
+    crossesByTeamAndFormation(teamId: $teamId, formation: $formation){
+        player {
+            _id
+        }
+        coordinate_x
+        coordinate_y
+        pass {
+            end_coordinate_x
+            end_coordinate_y
+            result
+        }
+    }
+}

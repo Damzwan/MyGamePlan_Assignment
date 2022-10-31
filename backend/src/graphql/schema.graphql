@@ -1,0 +1,103 @@
+type Team {
+    _id: Int!
+    name: String
+    wyscout_name: String
+    competition_id: Int
+    league: String
+    image: String
+}
+
+type Player {
+    _id: Int!
+    name: String
+    position_line: String
+    first_name: String
+    last_name: String
+    birth_date: String
+    preferred_foot: String
+    weight: Int
+    height: Int
+    jersey_num: Int
+    join_date: String
+    country: String
+    display_name: String
+    team: Team
+}
+
+type Match{
+    _id: Int!
+    season_id: Int
+    competition_name: String
+    competition_id: Int
+    date: String
+    match_day: Int
+    home_team_score: Int
+    away_team_Score: Int
+    wyscout_match_id: Int
+    first_half_video_start: Int
+    second_half_video_Start: Int
+    home_team: Team,
+    away_team: Team
+
+}
+
+type PlayerEventInfo{
+    _id: Int!
+    name: String
+    display_name: String
+    position: String
+}
+
+type TeamEventInfo{
+    _id: Int!
+    name: String
+    formation: String
+}
+
+type OpponentTeamEventInfo {
+    _id: Int!
+    name: String
+    defence: String
+}
+
+type Pass {
+    receiving_player: TeamEventInfo
+    result: String
+    end_coordinate_x: Float
+    end_coordinate_y: Float
+    length_group: String
+    direction_group: String
+    set_piece_type: String
+}
+
+type Event {
+    _id: Int!
+    period: Int
+    timestamp: Float
+    video_start_timestamp: Int
+    video_end_timestamp: Float
+    minute: Float
+    second: Int
+    event_type: String
+    coordinate_x: Float
+    coordinate_y: Float,
+    player: PlayerEventInfo
+    match: Match
+    team: TeamEventInfo
+    opponent_team: TeamEventInfo
+    position_in_match: String,
+    game_states: [String],
+    x_location_group: String,
+    y_location_group: String,
+    pass: Pass
+
+}
+
+type Query {
+    teams: [Team]
+    team(id: Int!): Team
+    player(id: Int!): Player
+    playersByTeam(teamId: Int!): [Player]
+    eventsByTeamAndFormation(teamId: Int!, formation: String): [Event]
+    crossesByTeamAndFormation(teamId: Int!, formation: String): [Event]
+}

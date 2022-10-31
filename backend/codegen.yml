@@ -1,0 +1,10 @@
+overwrite: true
+schema: "./src/graphql/schema.graphql"
+require: ['ts-node/register']
+generates:
+  src/gen-types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+      - "typescript-mongodb"
+      - "typescript-operations"
