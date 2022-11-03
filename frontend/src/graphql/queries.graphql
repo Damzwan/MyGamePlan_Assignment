@@ -9,6 +9,7 @@ query crossEvents($teamId: Int!, $formation: String!){
     crossesByTeamAndFormation(teamId: $teamId, formation: $formation){
         player {
             _id
+            name
         }
         coordinate_x
         coordinate_y
@@ -22,10 +23,15 @@ query crossEvents($teamId: Int!, $formation: String!){
         }
 
         match {
-          _id
-          home_team {
             _id
-          }
+            home_team {
+                name
+                _id
+            }
+            away_team {
+                name
+                _id
+            }
         }
     }
 }

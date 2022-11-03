@@ -1,21 +1,21 @@
 import React from 'react';
 
-import { AppBar, Container, FormControl, MenuItem, Select, SelectChangeEvent, Toolbar, Typography, } from "@mui/material";
+import {AppBar, Container, FormControl, MenuItem, Select, SelectChangeEvent, Toolbar, Typography,} from "@mui/material";
 import AdbIcon from '@mui/icons-material/Adb';
-import { selectedTeam as selectedTeamAtom, selectedFormation as selectedFormationAtom } from "../atoms";
-import { formations } from "../localData";
-import { useRecoilState } from "recoil";
-import { useTeamsQuery } from "../graphql/gen-types";
+import {selectedFormation as selectedFormationAtom, selectedTeam as selectedTeamAtom} from "../atoms";
+import {formations} from "../localData";
+import {useRecoilState} from "recoil";
+import {useTeamsQuery} from "../graphql/gen-types";
 
 function Navbar() {
     const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
     const [selectedFormation, setSelectedFormation] = useRecoilState(selectedFormationAtom);
 
-    const { data } = useTeamsQuery();
+    const {data} = useTeamsQuery();
 
     const handleTeamChange = (event: SelectChangeEvent) => {
         const [_id, name] = event.target.value.split(/_(.*)/s)
-        setSelectedTeam({ _id: _id, name: name });
+        setSelectedTeam({_id: _id, name: name});
     };
 
     const handleFormationChange = (event: SelectChangeEvent) => {
@@ -27,7 +27,7 @@ function Navbar() {
             <AppBar position="static" color="primary">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                        <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
                         <Typography
                             variant="h6"
                             noWrap
@@ -35,7 +35,7 @@ function Navbar() {
                             href="/"
                             sx={{
                                 mr: 2,
-                                display: { xs: 'none', md: 'flex' },
+                                display: {xs: 'none', md: 'flex'},
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
@@ -51,7 +51,15 @@ function Navbar() {
                                 value={selectedTeam ? selectedTeam._id + '_' + selectedTeam.name : ""}
                                 onChange={handleTeamChange}
                                 displayEmpty
-                                inputProps={{ "aria-label": "Without label" }}
+                                inputProps={{
+                                    "aria-label": "Without label", MenuProps: {
+                                        MenuListProps: {
+                                            sx: {
+                                                backgroundColor: 'primary.main'
+                                            }
+                                        }
+                                    }
+                                }}
                             >
                                 <MenuItem disabled value="">
                                     <em>Team</em>
@@ -68,7 +76,15 @@ function Navbar() {
                                 value={selectedFormation}
                                 onChange={handleFormationChange}
                                 displayEmpty
-                                inputProps={{ "aria-label": "Without label" }}
+                                inputProps={{
+                                    "aria-label": "Without label", MenuProps: {
+                                        MenuListProps: {
+                                            sx: {
+                                                backgroundColor: 'primary.main'
+                                            }
+                                        }
+                                    }
+                                }}
                                 disabled={selectedTeam === null}
                             >
                                 <MenuItem value={""}>
