@@ -1,45 +1,42 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import pitch from '../assets/pitch.svg'; // with import
 
-import {Box, Grid,} from "@mui/material";
-import {useRecoilValue} from "recoil";
-import {selectedTeam as selectedTeamAtom, selectedFormation as selectedFormationAtom} from "../atoms";
-import {useCrossEventsQuery, useTeamQuery} from "../graphql/gen-types";
-import {aggregateAndFilterCrossEventsByPlayer} from "../helpers";
+import { useRecoilState } from "recoil";
+import { Box, Grid, } from "@mui/material";
+import { useRecoilValue } from "recoil";
+import { selectedTeam as selectedTeamAtom, selectedFormation as selectedFormationAtom } from "../atoms";
+import { useCrossEventsQuery } from "../graphql/gen-types";
+import { aggregateAndFilterCrossEventsByPlayer, groupCrossesByLocation } from "../helpers";
 import PlayerCrossInfoTable from "./playerCrossInfoTable";
+import Pitch from "./pitch";
 
 
 function CrossesInfoPanel() {
     const selectedTeam = useRecoilValue(selectedTeamAtom)
     const selectedFormation = useRecoilValue(selectedFormationAtom)
-    const {data, refetch} = useCrossEventsQuery({
+
+    const { data, refetch } = useCrossEventsQuery({
         variables: {
-            teamId: parseInt(selectedTeam),
+            teamId: parseInt(selectedTeam ? selectedTeam._id : null),
             formation: selectedFormation
         }
     });
 
     useEffect(() => {
-        refetch({teamId: parseInt(selectedTeam), formation: selectedFormation})
+        refetch({ teamId: parseInt(selectedTeam ? selectedTeam._id : null), formation: selectedFormation })
     }, [selectedTeam, selectedFormation]);
 
 
+    if (!selectedTeam) return null
+
     return (
         <div className="CrossesInfoPanel">
-            <Grid container sx={{mt: 4}} spacing={4}>
+            <Grid container sx={{ mt: 4 }} spacing={4}>
                 <Grid item xs={8}>
-                    <PlayerCrossInfoTable></PlayerCrossInfoTable>
+                    <PlayerCrossInfoTable topPlayers={data ? aggregateAndFilterCrossEventsByPlayer(data) : null} />
                 </Grid>
                 <Grid item xs={4}>
-                    <Box
-                        component="img"
-                        sx={{
-                            height: "100%",
-                            width: "100%",
-                        }}
-                        alt="The house from the offer."
-                        src={pitch}
-                    />
+                    <Pitch crossEvents={data ? groupCrossesByLocation(data) : null} />
                 </Grid>
             </Grid>
         </div>

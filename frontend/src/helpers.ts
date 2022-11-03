@@ -1,5 +1,14 @@
 import {CrossEventsQuery} from "./graphql/gen-types";
 
+
+export function createTeamImg(id: string): string{
+    return `https://mygameplan-assets.s3.eu-west-3.amazonaws.com/images/teams/${id}.png`
+}
+
+export function createPlayerImg(id: string): string{
+    return `https://mygameplan-assets.s3.eu-west-3.amazonaws.com/images/players/${id}.png`
+}
+
 // Returns cross data of the topN players with the most crosses
 export function aggregateAndFilterCrossEventsByPlayer(data: CrossEventsQuery, topN: number = 3) {
     const crossesByPlayer = {}
@@ -11,9 +20,9 @@ export function aggregateAndFilterCrossEventsByPlayer(data: CrossEventsQuery, to
             midCrossSuccessQty: 0,
             midCrossFailQty: 0,
             lateCrossSuccessQty: 0,
-            lateCrossFailureQty: 0,
+            lateCrossFailQty: 0,
             crossQty: 0,
-            player_id: cross.player._id
+            player_id: cross.player._id.toString()
         }
 
         crossesByPlayer[cross.player._id].crossQty += 1;
@@ -26,7 +35,7 @@ export function aggregateAndFilterCrossEventsByPlayer(data: CrossEventsQuery, to
             else crossesByPlayer[cross.player._id].midCrossFailQty += 1;
         } else {
             if (cross.pass.result === "successful") crossesByPlayer[cross.player._id].lateCrossSuccessQty += 1;
-            else crossesByPlayer[cross.player._id].lateCrossFailureQty += 1;
+            else crossesByPlayer[cross.player._id].lateCrossFailQty += 1;
         }
 
     }
@@ -38,7 +47,7 @@ export function aggregateAndFilterCrossEventsByPlayer(data: CrossEventsQuery, to
 
 }
 
-export function groupCrossesOnLocation(data: CrossEventsQuery) {
+export function groupCrossesByLocation(data: CrossEventsQuery) {
     const groups = {left: [], right: []};
 
     for (const cross of data.crossesByTeamAndFormation) {

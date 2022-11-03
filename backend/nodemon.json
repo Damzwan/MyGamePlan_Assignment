@@ -3,5 +3,5 @@
     "src"
   ],
   "ext": "ts",
-  "exec": "graphql-codegen --config codegen.yml && npx tsx src/index.ts"
+  "exec": "npx graphql-codegen --config codegen.yml && npx tsx src/index.ts"
 }

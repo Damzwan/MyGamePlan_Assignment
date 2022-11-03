@@ -1,34 +1,33 @@
 import React from 'react';
 
-import {AppBar, Container, FormControl, MenuItem, Select, SelectChangeEvent, Toolbar, Typography,} from "@mui/material";
+import { AppBar, Container, FormControl, MenuItem, Select, SelectChangeEvent, Toolbar, Typography, } from "@mui/material";
 import AdbIcon from '@mui/icons-material/Adb';
-import {selectedTeam as selectedTeamAtom, selectedFormation as selectedFormationAtom} from "../atoms";
-import {formations} from "../localData";
-import {useRecoilState} from "recoil";
-import {useTeamsQuery} from "../graphql/gen-types";
+import { selectedTeam as selectedTeamAtom, selectedFormation as selectedFormationAtom } from "../atoms";
+import { formations } from "../localData";
+import { useRecoilState } from "recoil";
+import { useTeamsQuery } from "../graphql/gen-types";
 
 function Navbar() {
     const [selectedTeam, setSelectedTeam] = useRecoilState(selectedTeamAtom);
     const [selectedFormation, setSelectedFormation] = useRecoilState(selectedFormationAtom);
 
-    const {data, loading} = useTeamsQuery();
+    const { data } = useTeamsQuery();
 
     const handleTeamChange = (event: SelectChangeEvent) => {
-        setSelectedTeam(event.target.value);
+        const [_id, name] = event.target.value.split(/_(.*)/s)
+        setSelectedTeam({ _id: _id, name: name });
     };
 
     const handleFormationChange = (event: SelectChangeEvent) => {
         setSelectedFormation(event.target.value);
     };
 
-    if (loading) return null;
-
     return (
         <div className="Navbar">
             <AppBar position="static" color="primary">
                 <Container maxWidth="xl">
                     <Toolbar disableGutters>
-                        <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
+                        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                         <Typography
                             variant="h6"
                             noWrap
@@ -36,7 +35,7 @@ function Navbar() {
                             href="/"
                             sx={{
                                 mr: 2,
-                                display: {xs: 'none', md: 'flex'},
+                                display: { xs: 'none', md: 'flex' },
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
@@ -49,18 +48,18 @@ function Navbar() {
 
                         <FormControl>
                             <Select
-                                value={selectedTeam}
+                                value={selectedTeam ? selectedTeam._id + '_' + selectedTeam.name : ""}
                                 onChange={handleTeamChange}
                                 displayEmpty
-                                inputProps={{"aria-label": "Without label"}}
+                                inputProps={{ "aria-label": "Without label" }}
                             >
                                 <MenuItem disabled value="">
                                     <em>Team</em>
                                 </MenuItem>
 
-                                {data.teams.map((team, index) => (
-                                    <MenuItem key={index} value={team._id}>{team.name}</MenuItem>
-                                ))}
+                                {data ? data.teams.map((team, index) => (
+                                    <MenuItem key={index} value={team._id + '_' + team.name}>{team.name}</MenuItem>
+                                )) : []}
                             </Select>
                         </FormControl>
 
@@ -69,10 +68,10 @@ function Navbar() {
                                 value={selectedFormation}
                                 onChange={handleFormationChange}
                                 displayEmpty
-                                inputProps={{"aria-label": "Without label"}}
-                                disabled={selectedTeam === ''}
+                                inputProps={{ "aria-label": "Without label" }}
+                                disabled={selectedTeam === null}
                             >
-                                <MenuItem value={null}>
+                                <MenuItem value={""}>
                                     <em>Formation</em>
                                 </MenuItem>
 

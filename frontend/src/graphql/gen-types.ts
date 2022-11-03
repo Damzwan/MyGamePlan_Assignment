@@ -158,20 +158,13 @@ export type TeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type TeamsQuery = { __typename?: 'Query', teams?: Array<{ __typename?: 'Team', name?: string | null, _id: number } | null> | null };
 
-export type TeamQueryVariables = Exact<{
-  teamId: Scalars['Int'];
-}>;
-
-
-export type TeamQuery = { __typename?: 'Query', team?: { __typename?: 'Team', name?: string | null, image?: string | null } | null };
-
 export type CrossEventsQueryVariables = Exact<{
   teamId: Scalars['Int'];
   formation: Scalars['String'];
 }>;
 
 
-export type CrossEventsQuery = { __typename?: 'Query', crossesByTeamAndFormation?: Array<{ __typename?: 'Event', coordinate_x?: number | null, coordinate_y?: number | null, player?: { __typename?: 'PlayerEventInfo', _id: number } | null, pass?: { __typename?: 'Pass', end_coordinate_x?: number | null, end_coordinate_y?: number | null, result?: string | null } | null } | null> | null };
+export type CrossEventsQuery = { __typename?: 'Query', crossesByTeamAndFormation?: Array<{ __typename?: 'Event', coordinate_x?: number | null, coordinate_y?: number | null, player?: { __typename?: 'PlayerEventInfo', _id: number } | null, pass?: { __typename?: 'Pass', end_coordinate_x?: number | null, end_coordinate_y?: number | null, result?: string | null, receiving_player?: { __typename?: 'TeamEventInfo', name?: string | null } | null } | null, match?: { __typename?: 'Match', _id: number, home_team?: { __typename?: 'Team', _id: number } | null } | null } | null> | null };
 
 
 export const TeamsDocument = gql`
@@ -209,42 +202,6 @@ export function useTeamsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Team
 export type TeamsQueryHookResult = ReturnType<typeof useTeamsQuery>;
 export type TeamsLazyQueryHookResult = ReturnType<typeof useTeamsLazyQuery>;
 export type TeamsQueryResult = Apollo.QueryResult<TeamsQuery, TeamsQueryVariables>;
-export const TeamDocument = gql`
-    query team($teamId: Int!) {
-  team(id: $teamId) {
-    name
-    image
-  }
-}
-    `;
-
-/**
- * __useTeamQuery__
- *
- * To run a query within a React component, call `useTeamQuery` and pass it any options that fit your needs.
- * When your component renders, `useTeamQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useTeamQuery({
- *   variables: {
- *      teamId: // value for 'teamId'
- *   },
- * });
- */
-export function useTeamQuery(baseOptions: Apollo.QueryHookOptions<TeamQuery, TeamQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TeamQuery, TeamQueryVariables>(TeamDocument, options);
-      }
-export function useTeamLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamQuery, TeamQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TeamQuery, TeamQueryVariables>(TeamDocument, options);
-        }
-export type TeamQueryHookResult = ReturnType<typeof useTeamQuery>;
-export type TeamLazyQueryHookResult = ReturnType<typeof useTeamLazyQuery>;
-export type TeamQueryResult = Apollo.QueryResult<TeamQuery, TeamQueryVariables>;
 export const CrossEventsDocument = gql`
     query crossEvents($teamId: Int!, $formation: String!) {
   crossesByTeamAndFormation(teamId: $teamId, formation: $formation) {
@@ -257,6 +214,15 @@ export const CrossEventsDocument = gql`
       end_coordinate_x
       end_coordinate_y
       result
+      receiving_player {
+        name
+      }
+    }
+    match {
+      _id
+      home_team {
+        _id
+      }
     }
   }
 }
